@@ -89,6 +89,8 @@ const ModelOrigin = memo(function ModelOrigin({
   const longitude = origin?.longitude;
   const y = origin?.y;
 
+  const hasLatLon = latitude != null && longitude != null;
+
   const latitudeString = latitude != null
     ? `${latitude.toFixed(2)}°`
     : null;
@@ -135,17 +137,17 @@ const ModelOrigin = memo(function ModelOrigin({
       <ul className="grid grid-cols-2 grid-rows-2">
         <li>
           <CalciteLabel scale="s">
-            <p className="font-medium">{latitude != null ? "Latitude" : "x"}</p>
+            <p className="font-medium">{hasLatLon ? "Longitude" : "x"}</p>
             <p>
-              {latitudeString ?? x?.toFixed(2) ?? "--"}
+              {(hasLatLon ? longitudeString : x?.toFixed(2)) ?? "--"}
             </p>
           </CalciteLabel>
         </li>
         <li className="row-start-2">
           <CalciteLabel scale="s">
-            <p className="font-medium">{longitude != null ? "Longitude" : 'y'}</p>
+            <p className="font-medium">{hasLatLon ? "Latitude" : 'y'}</p>
             <p>
-              {longitudeString ?? y?.toFixed(2) ?? "--"}
+              {(hasLatLon ? latitudeString : y?.toFixed(2)) ?? "--"}
             </p>
           </CalciteLabel>
         </li>
@@ -220,7 +222,7 @@ const ModelOrigin = memo(function ModelOrigin({
                 let wkt = z == null ? `POINT(${x} ${y})` : `POINTZ(${x} ${y} ${z})`;
 
                 if (latitude != null && longitude != null)
-                  wkt = z == null ? `POINT(${latitude} ${longitude})` : `POINTZ(${latitude} ${longitude} ${z})`;
+                  wkt = z == null ? `POINT(${longitude} ${latitude})` : `POINTZ(${longitude} ${latitude} ${z})`;
 
                 navigator.clipboard.writeText(wkt);
               }
